@@ -7,6 +7,7 @@
   <meta name="description" content="PARLEMU Sant'Ambroggio — 12 commerces pour oser parler corse." />
   <link rel="manifest" href="manifest.webmanifest" />
   <title>PARLEMU — Sant'Ambroggio</title>
+  <!-- PARLEMU v1.1 — Passeport A Sfida -->
   <style>
     :root{
       --navy:#073b5b;
@@ -264,6 +265,49 @@
     .stamp.done{border-style:solid;background:#e4f4ef;border-color:#63c1b5}
     .stamp .sico{font-size:27px;margin-bottom:4px}
 
+
+    /* v1.1 — Gestion du passeport, sans modification de la Home */
+    .passport-intro{
+      background:white;border-radius:20px;padding:15px;box-shadow:var(--shadow);margin-bottom:12px
+    }
+    .passport-intro h3{margin:0 0 6px;color:var(--navy);font-size:17px}
+    .passport-intro p{margin:0;color:var(--muted);font-size:12.5px;line-height:1.4}
+    .passport-steps{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px
+    }
+    .passport-step{
+      background:#f7f3e9;border-radius:14px;padding:10px 7px;text-align:center;
+      font-size:10px;line-height:1.25;color:var(--ink)
+    }
+    .passport-step span{display:block;font-size:22px;margin-bottom:5px}
+    .passport-step b{display:block;color:var(--navy);font-size:10px;margin-bottom:2px}
+    .passport-next{
+      display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;
+      background:#fff4dc;border-radius:18px;padding:13px 14px;margin-bottom:14px;
+      box-shadow:var(--shadow)
+    }
+    .passport-next b{font-size:13px;color:var(--navy)}
+    .passport-next small{display:block;margin-top:3px;color:var(--muted);font-size:10.5px;line-height:1.25}
+    .passport-next .mini{white-space:nowrap}
+    .passport-status{
+      display:block;margin-top:5px;font-size:8px;font-weight:800;text-transform:uppercase;
+      letter-spacing:.03em;color:#829197
+    }
+    .stamp.done .passport-status{color:var(--teal-dark)}
+    .passport-complete{
+      display:none;background:linear-gradient(135deg,#ffd481,#f5a56f);
+      border-radius:20px;padding:17px;text-align:center;box-shadow:var(--shadow);margin-bottom:14px
+    }
+    .passport-complete.show{display:block}
+    .passport-complete .trophy{font-size:34px}
+    .passport-complete h3{margin:5px 0;color:var(--navy);font-size:20px}
+    .passport-complete p{margin:0;font-size:12px;line-height:1.4;color:var(--ink)}
+    .passport-help{
+      margin-top:14px;background:white;border-radius:18px;padding:13px 14px;box-shadow:var(--shadow)
+    }
+    .passport-help b{font-size:12px;color:var(--navy)}
+    .passport-help p{font-size:11px;color:var(--muted);line-height:1.4;margin:5px 0 0}
+
     .learn-card{
       background:white;border-radius:24px;box-shadow:var(--shadow);padding:24px 18px;text-align:center;min-height:270px;display:flex;flex-direction:column;justify-content:center
     }
@@ -386,15 +430,46 @@
   </section>
 
   <section id="sfida" class="page">
-    <div class="page-head"><h2>A Sfida</h2><p>Le défi des 12 commerces.</p></div>
+    <div class="page-head"><h2>Mon passeport</h2><p>A Sfida — le défi des 12 commerces.</p></div>
     <div class="page-body">
+
+      <div class="passport-intro">
+        <h3>Osez parler corse dans les 12 commerces</h3>
+        <p>Votre passeport garde la trace des commerces où vous avez relevé le défi. Il est pensé pour pouvoir être complété pendant un séjour d'une à deux semaines.</p>
+        <div class="passport-steps">
+          <div class="passport-step"><span>📍</span><b>1. Entrez</b>dans un commerce</div>
+          <div class="passport-step"><span>💬</span><b>2. Osez</b>une phrase en corse</div>
+          <div class="passport-step"><span>✅</span><b>3. Validez</b>votre tampon</div>
+        </div>
+      </div>
+
+      <div id="passportComplete" class="passport-complete">
+        <div class="trophy">🏆</div>
+        <h3>12 / 12 — Sfida cumpiuta !</h3>
+        <p>Vous avez relevé A Sfida dans les 12 commerces de Sant'Ambroggio.</p>
+      </div>
+
       <div class="progress-card">
         <strong id="challengeProgressText">0 commerce sur 12 validé</strong>
         <div class="bar"><i id="challengeBar" style="width:0%"></i></div>
-        <p style="margin:10px 0 0;font-size:13px;color:var(--muted)">Utilisez une phrase en corse, puis validez le commerce dans votre passeport.</p>
+        <p id="challengeProgressMessage" style="margin:10px 0 0;font-size:13px;color:var(--muted)">Commencez par le commerce de votre choix.</p>
       </div>
-      <div class="section-title">Votre passeport</div>
+
+      <div id="passportNext" class="passport-next">
+        <div>
+          <b id="passportNextTitle">Prochaine étape</b>
+          <small id="passportNextText">Choisissez votre premier commerce.</small>
+        </div>
+        <button id="passportNextBtn" class="mini primary">Choisir</button>
+      </div>
+
+      <div class="section-title">Mes 12 tampons</div>
       <div id="passportGrid" class="passport-grid"></div>
+
+      <div class="passport-help">
+        <b>Comment un tampon est-il obtenu ?</b>
+        <p>Dans ce prototype, ouvrez la fiche du commerce et utilisez le bouton « J'ai parlé corse ici ». Dans la version finale, le QR code propre à chaque commerce pourra ouvrir directement sa fiche avant validation.</p>
+      </div>
     </div>
   </section>
 
@@ -600,8 +675,9 @@ function openBusiness(id){
   document.getElementById("bizSubtitle").textContent=b.desc;
   document.getElementById("phraseList").innerHTML =
     b.phrases.map((p,i)=>phraseHTML(p[0],p[1],`${b.id}-${i}`)).join("") +
-    `<button class="mini primary" style="width:100%;padding:13px;margin-top:4px" onclick="toggleStamp('${b.id}')">
-       ${stamps.includes(b.id)?"✓ Commerce validé":"J'ai parlé corse ici"}
+    `<button class="mini primary" style="width:100%;padding:13px;margin-top:4px"
+       ${stamps.includes(b.id)?"disabled":`onclick="toggleStamp('${b.id}')"`}>
+       ${stamps.includes(b.id)?"✓ Tampon obtenu":"J'ai parlé corse ici"}
      </button>`;
   go("business-detail");
 }
@@ -643,21 +719,75 @@ function renderFavorites(){
 }
 
 function toggleStamp(id){
-  stamps=stamps.includes(id)?stamps.filter(x=>x!==id):[...stamps,id];
-  save(); renderPassport();
+  // Un tampon obtenu reste acquis : on évite les suppressions accidentelles.
+  if(stamps.includes(id)) return;
+  stamps=[...stamps,id];
+  save();
+  renderPassport();
   const active=document.querySelector(".page.active");
   if(active?.id==="business-detail") openBusiness(id);
 }
 
+function passportMessage(count){
+  const remaining=12-count;
+  if(count===0) return "Commencez par le commerce de votre choix.";
+  if(count===12) return "Passeport complet : vous avez relevé les 12 défis.";
+  if(remaining===1) return "Plus qu'un commerce pour terminer A Sfida !";
+  if(count>=8) return `Belle avancée : encore ${remaining} commerces.`;
+  if(count>=4) return `${count} tampons obtenus : encore ${remaining} commerces à découvrir.`;
+  return `C'est parti : encore ${remaining} commerces pour compléter le passeport.`;
+}
+
+function openNextPassportCommerce(){
+  const next=businesses.find(b=>!stamps.includes(b.id));
+  if(next) openBusiness(next.id);
+}
+
 function renderPassport(){
-  const pct=Math.round(stamps.length/12*100);
-  document.getElementById("challengeProgressText").textContent=`${stamps.length} commerce${stamps.length>1?"s":""} sur 12 validé${stamps.length>1?"s":""}`;
+  const count=stamps.length;
+  const remaining=12-count;
+  const pct=Math.round(count/12*100);
+
+  document.getElementById("challengeProgressText").textContent=
+    `${count} commerce${count>1?"s":""} sur 12 validé${count>1?"s":""}`;
   document.getElementById("challengeBar").style.width=pct+"%";
-  document.getElementById("passportGrid").innerHTML=businesses.map(b=>`
-    <button class="stamp ${stamps.includes(b.id)?"done":""}" onclick="toggleStamp('${b.id}')">
-      <span class="sico">${stamps.includes(b.id)?"✅":b.icon}</span>
+  document.getElementById("challengeProgressMessage").textContent=passportMessage(count);
+
+  const complete=document.getElementById("passportComplete");
+  if(complete) complete.classList.toggle("show",count===12);
+
+  const next=businesses.find(b=>!stamps.includes(b.id));
+  const nextTitle=document.getElementById("passportNextTitle");
+  const nextText=document.getElementById("passportNextText");
+  const nextBtn=document.getElementById("passportNextBtn");
+
+  if(count===12){
+    nextTitle.textContent="Passeport terminé";
+    nextText.textContent="Les 12 commerces sont validés.";
+    nextBtn.textContent="12 / 12";
+    nextBtn.disabled=true;
+  }else if(count===0){
+    nextTitle.textContent="Commencez où vous voulez";
+    nextText.textContent="Choisissez un commerce de la Marine.";
+    nextBtn.textContent="Choisir";
+    nextBtn.disabled=false;
+    nextBtn.onclick=()=>go("commerces");
+  }else{
+    nextTitle.textContent=`Suggestion : ${next.icon} ${next.name}`;
+    nextText.textContent=`Encore ${remaining} commerce${remaining>1?"s":""} à découvrir.`;
+    nextBtn.textContent="Continuer";
+    nextBtn.disabled=false;
+    nextBtn.onclick=openNextPassportCommerce;
+  }
+
+  document.getElementById("passportGrid").innerHTML=businesses.map(b=>{
+    const done=stamps.includes(b.id);
+    return `<button class="stamp ${done?"done":""}" onclick="openBusiness('${b.id}')">
+      <span class="sico">${done?"✅":b.icon}</span>
       <strong>${b.name}</strong>
-    </button>`).join("");
+      <span class="passport-status">${done?"Tampon obtenu":"À découvrir"}</span>
+    </button>`;
+  }).join("");
 }
 
 function allLearn(){
